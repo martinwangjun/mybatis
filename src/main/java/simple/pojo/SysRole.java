@@ -13,8 +13,9 @@ public class SysRole implements Serializable{
     private Integer id;
     private String roleName;
     private Integer enabled;
-    private Long createdBy;
-    private Date createdTime;
+    private Long createBy;
+    private Date createTime;
+    private SysUser user;
     public Integer getId() {
         return id;
     }
@@ -33,16 +34,22 @@ public class SysRole implements Serializable{
     public void setEnabled(Integer enabled) {
         this.enabled = enabled;
     }
-    public Long getCreatedBy() {
-        return createdBy;
+    public Long getCreateBy() {
+        return createBy;
     }
-    public void setCreatedBy(Long createdBy) {
-        this.createdBy = createdBy;
+    public void setCreateBy(Long createBy) {
+        this.createBy = createBy;
     }
-    public Date getCreatedTime() {
-        return createdTime;
+    public Date getCreateTime() {
+        return createTime;
     }
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+    public SysUser getUser() {
+        return user;
+    }
+    public void setUser(SysUser user) {
+        this.user = user;
     }
 }

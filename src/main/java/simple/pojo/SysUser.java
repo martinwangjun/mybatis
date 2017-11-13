@@ -1,7 +1,7 @@
 package simple.pojo;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 public class SysUser implements Serializable{
     // 在实体类中，不要使用基本数据类型，原因如下：
@@ -58,8 +58,5 @@ public class SysUser implements Serializable{
     }
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
-    }
-    public static long getSerialversionuid() {
-        return serialVersionUID;
     }
 }

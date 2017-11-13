@@ -29,11 +29,79 @@
         C.id,
         C.role_name AS roleName,
         C.enabled,
-        C.created_by AS createdBy,
-        C.create_time AS createdTime
+        C.create_by AS createBy,
+        C.create_time AS createTime,
+        A.user_name AS "user.userName",
+        A.user_email AS "user.userEmail"
     FROM sys_user A
     INNER JOIN sys_user_role B ON A.id = B.user_id
     INNER JOIN sys_role C ON B.role_id = C.id
-    WHERE A.id = #{id}
+    WHERE A.id = #{userId}
+  </select>
+  <insert id="insert">
+    INSERT INTO sys_user(id, user_name, user_password, user_email,
+        user_info, head_img, create_time) 
+      VALUES(
+        #{id}, #{userName}, #{userPassword}, #{userEmail}, #{userInfo},
+        #{headImg, jdbcType=BLOB}, #{createTime, jdbcType=TIMESTAMP}
+        )
+  </insert>
+  <insert id="insert2" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sys_user(user_name, user_password, user_email,
+        user_info, head_img, create_time) 
+      VALUES(
+        #{userName}, #{userPassword}, #{userEmail}, #{userInfo},
+        #{headImg, jdbcType=BLOB}, #{createTime, jdbcType=TIMESTAMP}
+        )
+  </insert>
+  <insert id="insert3">
+    INSERT INTO sys_user(
+      user_name, user_password, user_email,
+      user_info, head_img, create_time
+      )
+      VALUES(
+      #{userName}, #{userPassword}, #{userEmail}, #{userInfo},
+      #{headImg, jdbcType=BLOB}, #{createTime, jdbcType=TIMESTAMP}
+      )
+    <selectKey keyColumn="id" resultType="long" keyProperty="id" order="AFTER">
+      SELECT LAST_INSERT_ID();
+    </selectKey>
+  </insert>
+  <update id="updateById">
+    UPDATE sys_user SET
+      user_name = #{userName}, user_password = #{userPassword},
+      user_email = #{userEmail}, user_info = #{userInfo}, 
+      head_img = #{headImg, jdbcType=BLOB},
+      create_time = #{createTime, jdbcType=TIMESTAMP}
+      WHERE id = #{id}
+  </update>
+  <delete id="deleteById">
+    DELETE FROM sys_user WHERE id = #{id}
+  </delete>
+  <select id="selectRolesByUserIdAndRoleEnabled"
+      resultType="simple.pojo.SysRole">
+    SELECT
+        C.id,
+        C.role_name AS roleName,
+        C.enabled,
+        C.create_by AS createBy,
+        C.create_time AS createTime
+      FROM sys_user A
+        INNER JOIN sys_user_role B ON A.id = B.user_id
+        INNER JOIN sys_role C ON B.role_id = C.id
+      WHERE A.id = #{userId} AND C.enabled = #{enabled}
+  </select>
+  <select id="selectRolesByUserAndRole" 
+      resultType="simple.pojo.SysRole">
+      SELECT
+        C.id,
+        C.role_name AS roleName,
+        C.enabled,
+        C.create_by AS createBy,
+        C.create_time AS createTime
+      FROM sys_user A
+        INNER JOIN sys_user_role B ON A.id = B.user_id
+        INNER JOIN sys_role C ON B.role_id = C.id
+      WHERE A.id = #{user.id} AND C.enabled = #{role.enabled}
   </select>
 </mapper>
