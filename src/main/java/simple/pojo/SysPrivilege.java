@@ -13,7 +13,7 @@ privilege_url
 public class SysPrivilege implements Serializable{
     private static final long serialVersionUID = 6682870668014988531L;
     private Long id;
-    private Long privilegeName;
+    private String privilegeName;
     private String privilegeUrl;
     public Long getId() {
         return id;
@@ -21,10 +21,10 @@ public class SysPrivilege implements Serializable{
     public void setId(Long id) {
         this.id = id;
     }
-    public Long getPrivilegeName() {
+    public String getPrivilegeName() {
         return privilegeName;
     }
-    public void setPrivilegeName(Long privilegeName) {
+    public void setPrivilegeName(String privilegeName) {
         this.privilegeName = privilegeName;
     }
     public String getPrivilegeUrl() {

@@ -12,7 +12,6 @@ import simple.pojo.SysUser;
 
 public class UserMapperTest extends BaseMapperTest{
 
-    /*
     @Test
     public void testSelectById() {
         SqlSession sqlSession = getSqlSession();
@@ -150,7 +149,6 @@ public class UserMapperTest extends BaseMapperTest{
             sqlSession.close();
         }
     }
-    */
     
     @Test
     public void testSelectRolesByUserIdAndRoleEnabled() {

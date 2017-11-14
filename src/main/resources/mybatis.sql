@@ -65,7 +65,7 @@ CREATE TABLE `sys_role` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `role_name` varchar(50) DEFAULT NULL,
   `enabled` tinyint(4) DEFAULT NULL,
-  `created_by` bigint(20) DEFAULT NULL,
+  `create_by` bigint(20) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
