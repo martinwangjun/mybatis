@@ -38,6 +38,17 @@
     INNER JOIN sys_role C ON B.role_id = C.id
     WHERE A.id = #{userId}
   </select>
+  <select id="selectByUser" resultType="simple.pojo.SysUser" resultMap="userMap">
+    SELECT id, user_name, user_password, user_email, user_info, head_img, create_time
+      FROM sys_user 
+      WHERE 1 = 1
+      <if test="userName != null and userName != ''">
+        AND user_name LIKE CONCAT('%', #{userName}, '%')
+      </if>
+      <if test="userEmail != null and userEmail != ''">
+        AND user_email = #{userEmail}
+      </if>
+  </select>
   <insert id="insert">
     INSERT INTO sys_user(id, user_name, user_password, user_email,
         user_info, head_img, create_time) 
@@ -104,4 +115,170 @@
         INNER JOIN sys_role C ON B.role_id = C.id
       WHERE A.id = #{user.id} AND C.enabled = #{role.enabled}
   </select>
+  <update id="updateByIdSelective">
+    UPDATE sys_user
+      SET 
+        <if test="userName != null and userName != ''">
+          user_name = #{userName},
+        </if>
+        <if test="userPassword != null and userPassword != ''">
+          user_password = #{userPassword},
+        </if>
+        <if test="userEmail != null and userEmail != ''">
+          user_email = #{userEmail},
+        </if>
+        <if test="userInfo != null and userInfo != ''">
+          user_info = #{userInfo},
+        </if>
+        <if test="headImg != null">
+          head_img = #{headImg, jdbcType=BLOB},
+        </if>
+        <if test="createTime != null">
+          create_time = #{createTime, jdbcType=TIMESTAMP},
+        </if>
+        id = #{id}
+      WHERE id = #{id}
+  </update>
+  <insert id="insert4">
+    INSERT INTO sys_user(
+        user_name, user_password, 
+        <if test="userEmail != null and userEmail != ''">
+          user_email,
+        </if>
+        user_info, head_img, create_time)
+      VALUES(
+        #{userName}, #{userPassword},
+        <if test="userEmail != null and userEmail != ''">
+          #{userEmail},
+        </if>
+        #{userInfo}, #{headImg, jdbcType=BLOB},
+        #{createTime, jdbcType=TIMESTAMP})
+  </insert>
+  <select id="selectByIdOrUserName" resultType="simple.pojo.SysUser" resultMap="userMap">
+    SELECT id, user_name, user_password, user_email, user_info, head_img, create_time
+      FROM sys_user
+      WHERE 1 = 1
+      <choose>
+        <when test="id != null">
+          AND id = #{id}
+        </when>
+        <when test="userName != null and userName != ''">
+          AND user_name = #{userName}
+        </when>
+        <otherwise>
+          AND 1 = 2
+        </otherwise>
+      </choose>
+  </select>
+  <select id="selectByUser2" resultType="simple.pojo.SysUser" resultMap="userMap">
+    SELECT id, user_name, user_password, user_email, user_info, head_img, create_time
+      FROM sys_user
+      <where>
+        <if test="userName != null and userName != ''">
+          AND user_name LIKE CONCAT('%', #{userName}, '%')
+        </if>
+        <if test="userEmail != null and userEmail != ''">
+          AND user_email = #{userEmail}
+        </if>
+      </where>
+  </select>
+  
+  <!-- set用法 -->
+  <update id="updateByIdSelective2">
+    UPDATE sys_user
+      <set>
+        <if test="userName != null and userName != ''">
+          user_name = #{userName},
+        </if>
+        <if test="userPassword != null and userPassword != ''">
+          user_password = #{userPassword},
+        </if>
+        <if test="userEmail != null and userEmail != ''">
+          user_email = #{userEmail},
+        </if>
+        <if test="userInfo != null and userInfo != ''">
+          user_info = #{userInfo},
+        </if>
+        <if test="headImg != null">
+          head_img = #{headImg, jdbcType=BLOB},
+        </if>
+        <if test="createTime != null">
+          create_time = #{createTime, jdbcType=TIMESTAMP},
+        </if>
+        id = #{id},
+      </set>
+        WHERE id = #{id}
+  </update>
+  
+  
+  <!-- trim用法 P95 -->
+  
+  <!-- foreach用法 -->
+  
+  <!-- 1. 解决如 id in (1, 2, 3)这样的sql的问题 -->
+  <select id="selectByIdList1" resultType="simple.pojo.SysUser" resultMap="userMap">
+    SELECT id, user_name, user_password, user_email, user_info, head_img, create_time
+      FROM sys_user
+      WHERE id IN
+      <foreach collection="list" open="(" close=")" separator="," item="id" index="i">
+        #{id}
+      </foreach>
+  </select>  
+  
+  <select id="selectByIdList2" resultType="simple.pojo.SysUser" resultMap="userMap">
+    SELECT id, user_name, user_password, user_email, user_info, head_img, create_time
+      FROM sys_user
+      WHERE id IN
+      <foreach collection="array" open="(" close=")" separator="," item="id" index="i">
+        #{id}
+      </foreach>
+  </select>
+  
+  <select id="selectByIdList3" resultType="simple.pojo.SysUser" resultMap="userMap">
+    SELECT id, user_name, user_password, user_email, user_info, head_img, create_time
+      FROM sys_user
+      WHERE id IN
+      <foreach collection="ids" open="(" close=")" separator="," item="id" index="i">
+        #{id}
+      </foreach>
+  </select>
+  
+  <!-- 2. 解决批量插入 -->
+  <insert id="insertList">
+    INSERT INTO sys_user(user_name, user_password, user_email, 
+        user_info, head_img, create_time)
+      VALUES
+      <foreach collection="list" item="user" separator=",">
+        (
+        #{user.userName}, #{user.userPassword}, #{user.userEmail}, 
+        #{user.userInfo}, #{user.headImg, jdbcType=BLOB}, 
+        #{user.createTime, jdbcType=TIMESTAMP}
+        )
+      </foreach>
+  </insert>
+  
+  <!-- 3. foreach实现动态UPDATE -->
+  <update id="updateByMap">
+    UPDATE sys_user
+      SET
+      <foreach collection="_parameter" item="val" index="key" separator=",">
+        ${key} = #{val}
+      </foreach>
+      WHERE id = #{id}
+  </update>
+  
+  <select id="selectByUserName" resultMap="userMap"  resultType="simple.pojo.SysUser">
+    SELECT
+      id, user_name, user_password, user_email, 
+        user_info, head_img, create_time
+      FROM sys_user
+      <where>
+        <if test="userName != null and userName != ''">
+            <bind name="userNameLike" value="'%' + userName + '%'"/>
+            user_name LIKE #{userNameLike}
+        </if>
+      </where>
+  </select>
+  
+  
 </mapper>

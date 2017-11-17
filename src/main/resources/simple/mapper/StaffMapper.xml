@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="simple.mapper.StaffMapper">
+  <!-- Mapping database column to java properties -->
+  <resultMap type="simple.pojo.Staff" id="staffMap">
+    <id property="staffId" column="f_staff_id" />
+    <result property="name" column="f_name" />
+    <result property="power" column="f_power" />
+    <result property="leadership" column="f_leadership" />
+    <result property="wisdom" column="f_wisdom" />
+    <result property="policy" column="f_policy" />
+    <result property="isDead" column="f_is_dead" />
+  </resultMap>
+  <select id="selectById" resultMap="staffMap">
+    SELECT f_staff_id, f_name, f_power, f_leadership, 
+        f_wisdom, f_policy, f_is_dead 
+      FROM t_staff 
+      WHERE f_staff_id = #{id}
+  </select>
+  <select id="selectAll" resultMap="staffMap">
+    SELECT f_staff_id, f_name, f_power, f_leadership, 
+        f_wisdom, f_policy, f_is_dead 
+      FROM t_staff 
+      WHERE f_is_dead = 0
+  </select>
+  <select id="selectByName" resultMap="staffMap">
+    SELECT f_staff_id, f_name, f_power, f_leadership, 
+        f_wisdom, f_policy, f_is_dead 
+      FROM t_staff 
+      WHERE f_is_dead = 0 AND f_name LIKE CONCAT('%', #{value}, '%')
+  </select>
+  <insert id="insert">
+    INSERT INTO t_staff (f_name, f_power, f_leadership, f_wisdom, f_policy)
+      VALUES(#{name}, #{power}, #{leadership}, #{wisdom}, #{policy})
+    <selectKey keyColumn="f_staff_id" resultType="long" keyProperty="staffId" order="AFTER">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+</mapper>

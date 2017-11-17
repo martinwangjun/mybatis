@@ -15,6 +15,12 @@
       </dataSource>
     </environment>
   </environments>
+  <databaseIdProvider type="DB_VENDOR">
+    <property name="SQL Server" value="sqlserver"/>
+    <property name="DB2" value="db2"/>
+    <property name="MySQL" value="mysql"/>
+    <property name="Oracle" value="oracle"/>
+  </databaseIdProvider>
   <mappers>
     <package name="simple.mapper" />
   </mappers>
