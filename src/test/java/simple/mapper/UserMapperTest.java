@@ -389,7 +389,7 @@ public class UserMapperTest extends BaseMapperTest{
         }
     }
     
-    @Test
+    // @Test
     public void testSelectByUserName() {
         SqlSession sqlSession = getSqlSession();
         try {
